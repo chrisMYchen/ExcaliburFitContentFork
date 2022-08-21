@@ -25,6 +25,11 @@ export enum DisplayMode {
   FitContainerAndFill = 'FitContainerAndFill',
 
   /**
+   * Fit an aspect ratio within the screen at all times will fill the screen.
+   */
+  FitContent = 'FitContent',
+
+  /**
    * Fit the aspect ratio given by the game resolution the screen at all times will fill the screen.
    * This displayed area outside the aspect ratio is not guaranteed to be on the screen, only the [[Screen.contentArea]]
    * is guaranteed to be on screen.
@@ -687,6 +692,29 @@ export class Screen {
     this._contentArea = BoundingBox.fromDimension(this.resolution.width, this.resolution.height, Vector.Zero);
   }
 
+  private _computeFitContent() {
+    document.body.style.margin = '0px';
+    document.body.style.overflow = 'hidden';
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    this.viewport = {
+      width: vw,
+      height: vh
+    };
+
+    if (vw / vh <= this._contentResolution.width / this._contentResolution.height) {
+      this.resolution = {
+        width:  vw * this._contentResolution.width / vw,
+        height: vw * this._contentResolution.width / vw * vh / vw
+      };
+    } else {
+      this.resolution = {
+        width: vh *  this._contentResolution.height / vh * vw / vh,
+        height: vh *  this._contentResolution.height / vh
+      };
+    }
+  }
+
   private _contentArea: BoundingBox = new BoundingBox();
   private _computeFitScreenAndFill() {
     document.body.style.margin = '0px';
@@ -887,6 +915,10 @@ export class Screen {
 
     if (this.displayMode === DisplayMode.FitScreen) {
       this._computeFit();
+    }
+
+    if (this.displayMode === DisplayMode.FitContent) {
+      this._computeFitContent();
     }
 
     if (this.displayMode === DisplayMode.FitContainer) {

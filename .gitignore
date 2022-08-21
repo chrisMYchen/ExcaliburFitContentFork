@@ -41,7 +41,7 @@ Thumbs.db
 
 # Build
 .vs/
-build/
+#build/
 build-storybook/
 bld/
 bin/

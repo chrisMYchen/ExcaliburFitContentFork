@@ -7,6 +7,7 @@ ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt update
+RUN apt install -y git
 # Install Chromium Shared Deps (puppeteer in npm comes with chromium binary)
 RUN apt install -y wget curl gnupg libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libasound2
 
